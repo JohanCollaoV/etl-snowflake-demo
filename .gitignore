@@ -3,11 +3,28 @@ venv/
 .env/
 __pycache__/
 *.pyc
+*.pyo
 
 # Archivos de sistema
 .DS_Store
 *.log
+*.swp
+*.swo
 
 # Archivos de configuración local
 .env
 .env.local
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# IDE
+.vscode/
+.idea/
+
+# Python build
+*.egg-info/
+dist/
+build/
