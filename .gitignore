@@ -1,0 +1,13 @@
+# Entornos virtuales
+venv/
+.env/
+__pycache__/
+*.pyc
+
+# Archivos de sistema
+.DS_Store
+*.log
+
+# Archivos de configuración local
+.env
+.env.local
