@@ -37,17 +37,22 @@ Registro de avances significativos del proyecto. No incluye commits individuales
 ## Proximas Fases
 
 ### Fase 2 — Dimensiones y Transformaciones
-- [ ] Ejecutar `load_dimensions.sql` para poblar DIM_PRODUCTS y DIM_CUSTOMERS
-- [ ] Implementar dbt para transformaciones y testing
-- [x] Migrar credenciales de stage a STORAGE_INTEGRATION (codigo listo, bloqueado por edicion Standard de Snowflake. STORAGE_INTEGRATION requiere Enterprise+). Se mantiene credenciales inline para desarrollo.
+- [x] Crear `stage_load_dev.sql` (Standard Edition, credenciales inline)
+- [x] `stage_load.sql` migrado a STORAGE_INTEGRATION (codigo listo, requiere Snowflake Enterprise+)
+- [x] Ejecutar `load_dimensions.sql` para poblar DIM_PRODUCTS (5) y DIM_CUSTOMERS (3)
+- [ ] Configurar dbt Core (local) — proyecto dbt_sales/ con modelos staging, dims, fact, analytics
+- [ ] Crear Dockerfile para dbt (contenedor portatil)
+- [ ] Agregar tests y documentacion dbt
 
-### Fase 3 — Orquestacion y Visualizacion
-- [ ] DAG de Airflow para orquestar el pipeline completo
+### Fase 3 — Orquestacion
+- [ ] DAG de Airflow: ingest_to_s3.py → COPY INTO → dbt run
+- [ ] Airflow local con Docker
+
+### Fase 4 — CI/CD
+- [ ] GitHub Actions: lint Python (ruff), lint SQL (sqlfluff), dbt test, terraform plan por PR
+
+### Fase 5 — Visualizacion
 - [ ] Dashboard en Looker Studio conectado a Snowflake
-
-### Fase 4 — DevOps
-- [ ] CI/CD con GitHub Actions
-- [ ] Exportacion Snowflake → S3 (datos transformados)
 
 ---
 

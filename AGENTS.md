@@ -10,8 +10,9 @@ Pipeline ETL end-to-end de datos de ventas de e-commerce. Genera datos ficticios
 - **Data Lake**: AWS S3 (capas raw/, processed/, curated/)
 - **Data Warehouse**: Snowflake
 - **IaC**: Terraform (bucket S3)
-- **Orquestacion**: Apache Airflow (planificado)
-- **Transformacion**: dbt (planificado)
+- **Orquestacion**: Apache Airflow (planificado) + contenedores Docker
+- **Transformacion**: dbt Core local (planificado)
+- **CI/CD**: GitHub Actions (planificado)
 - **Visualizacion**: Looker Studio (planificado)
 
 ## Estructura del Proyecto
@@ -103,3 +104,20 @@ Actualmente no hay test suite. Cualquier nuevo script debe incluir validacion de
 - `stage_load_dev.sql` usa CREDENTIALS inline → solo para Snowflake Standard Edition. `stage_load.sql` tiene la version segura con STORAGE_INTEGRATION (requiere Enterprise+). Sustituir `<AWS_ACCESS_KEY>` / `<AWS_SECRET_KEY>` por valores reales al ejecutar.
 - El bucket S3 tiene `force_destroy = true` — solo para desarrollo
 - Snowflake warehouse configurado con `AUTO_SUSPEND = 300` para control de costos
+
+## Modo Aprendizaje
+
+Antes de ejecutar cualquier modificacion en el codigo (archivos .sql, .py, .tf, .yml, .md, .json):
+
+1. Explica que archivos se van a modificar y por que
+2. Haz una pregunta de verificacion al usuario para confirmar que entiende el cambio
+3. Espera la respuesta antes de proceder
+
+Ejemplo:
+> "Voy a modificar `dbt_project.yml` para agregar el perfil de Snowflake.
+> ¿Entiendes por que usamos `profiles.yml` en vez de variables de entorno?"
+
+No aplicar esta regla para:
+- Consultas de documentacion (aws_knowledge)
+- Lectura de archivos
+- Busquedas en el codigo
