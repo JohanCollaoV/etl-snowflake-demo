@@ -22,7 +22,8 @@ etl-snowflake-demo/
 ├── sql/
 │   ├── setup.sql                    # Warehouse, DB, schema inicial
 │   ├── create_tables.sql            # FACT_SALES, DIM_PRODUCTS, DIM_CUSTOMERS
-│   ├── stage_load.sql               # External Stage + COPY INTO
+│   ├── stage_load.sql               # External Stage (STORAGE_INTEGRATION, produccion)
+│   ├── stage_load_dev.sql           # External Stage (credenciales inline, desarrollo)
 │   ├── load_dimensions.sql          # Poblar dims desde staging
 │   ├── analytics_querys.sql         # Consultas analiticas
 │   └── limpieza.sql                 # Limpieza de tablas temporales
@@ -60,7 +61,7 @@ cd terraform && terraform destroy -auto-approve
 ## Flujo del Pipeline
 
 ```
-generate_sales_data() → S3 (raw/sales_data.csv) → External Stage → COPY INTO STG_TEMP_SALES → INSERT INTO FACT_SALES → (pendiente: poblar DIM_PRODUCTS, DIM_CUSTOMERS)
+generate_sales_data() → S3 (raw/sales_data.csv) → External Stage → COPY INTO STG_TEMP_SALES → INSERT INTO FACT_SALES → Poblar DIM_PRODUCTS, DIM_CUSTOMERS
 ```
 
 ## Modelo de Datos (Snowflake)
@@ -99,6 +100,6 @@ Actualmente no hay test suite. Cualquier nuevo script debe incluir validacion de
 
 ## Notas de Seguridad
 
-- Las credenciales de AWS en `stage_load.sql:31` estan hardcodeadas → migrar a STORAGE_INTEGRATION con rol IAM
+- `stage_load_dev.sql` usa CREDENTIALS inline → solo para Snowflake Standard Edition. `stage_load.sql` tiene la version segura con STORAGE_INTEGRATION (requiere Enterprise+). Sustituir `<AWS_ACCESS_KEY>` / `<AWS_SECRET_KEY>` por valores reales al ejecutar.
 - El bucket S3 tiene `force_destroy = true` — solo para desarrollo
 - Snowflake warehouse configurado con `AUTO_SUSPEND = 300` para control de costos
