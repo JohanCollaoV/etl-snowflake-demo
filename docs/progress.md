@@ -23,6 +23,7 @@ Registro de avances significativos del proyecto. No incluye commits individuales
 - Base de datos VENTAS_DB y schema PUBLIC
 - Tablas creadas: FACT_SALES, DIM_PRODUCTS, DIM_CUSTOMERS, STG_SALES
 - External Stage `my_s3_stage` conectado a S3
+- Stage migrado a STORAGE_INTEGRATION (sin credenciales inline)
 - Datos cargados con COPY INTO (500 registros verificados en FACT_SALES)
 - VS Code conectado via extension oficial de Snowflake
 
@@ -38,7 +39,7 @@ Registro de avances significativos del proyecto. No incluye commits individuales
 ### Fase 2 — Dimensiones y Transformaciones
 - [ ] Ejecutar `load_dimensions.sql` para poblar DIM_PRODUCTS y DIM_CUSTOMERS
 - [ ] Implementar dbt para transformaciones y testing
-- [ ] Migrar credenciales de stage a STORAGE_INTEGRATION
+- [x] Migrar credenciales de stage a STORAGE_INTEGRATION
 
 ### Fase 3 — Orquestacion y Visualizacion
 - [ ] DAG de Airflow para orquestar el pipeline completo
@@ -50,4 +51,4 @@ Registro de avances significativos del proyecto. No incluye commits individuales
 
 ---
 
-*Ultima actualizacion: 31 de julio, 2026*
+*Ultima actualizacion: 3 de agosto, 2026*

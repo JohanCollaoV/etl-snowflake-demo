@@ -22,30 +22,33 @@ CREATE OR REPLACE TABLE STG_TEMP_SALES (
     region VARCHAR(100)
 );
 
--- 2. Crear External Stage (via STORAGE_INTEGRATION, recomendado para produccion)
--- PASO 1: Crear la integracion de almacenamiento (ejecutar en Snowflake):
---
+-- 2. Crear External Stage (via STORAGE_INTEGRATION)
+-- PASO 1 (AWS IAM):
+--   Crear IAM Role con trust policy para Snowflake y politicas s3:GetObject, s3:ListBucket
+-- PASO 2 (Snowflake):
 --   CREATE OR REPLACE STORAGE_INTEGRATION s3_int
 --       TYPE = EXTERNAL_STAGE
 --       STORAGE_PROVIDER = 'S3'
 --       ENABLED = TRUE
 --       STORAGE_AWS_ROLE_ARN = '<ARN_DEL_ROL_IAM>'
 --       STORAGE_ALLOWED_LOCATIONS = ('s3://etl-snowflake-demo-johan/');
---
--- PASO 2: Crear el stage usando la integracion:
---
---   CREATE OR REPLACE STAGE my_s3_stage
---       URL = 's3://etl-snowflake-demo-johan/raw/'
---       STORAGE_INTEGRATION = s3_int
---       FILE_FORMAT = (TYPE = CSV FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
---
--- Alternativa para desarrollo (NO USAR EN PRODUCCION):
---   Sustituir <AWS_ACCESS_KEY> y <AWS_SECRET_KEY> por variables de entorno o un archivo .env
+--   DESC INTEGRATION s3_int;
+--   -- Copiar STORAGE_AWS_IAM_USER_ARN y STORAGE_AWS_EXTERNAL_ID
+-- PASO 3 (AWS IAM):
+--   Editar trust policy del rol con STORAGE_AWS_IAM_USER_ARN y STORAGE_AWS_EXTERNAL_ID
+-- PASO 4 (Snowflake):
+--   Ejecutar el CREATE STAGE de abajo
 
 CREATE OR REPLACE STAGE my_s3_stage
 URL = 's3://etl-snowflake-demo-johan/raw/'
-CREDENTIALS = (AWS_KEY_ID = '<AWS_ACCESS_KEY>' AWS_SECRET_KEY = '<AWS_SECRET_KEY>')
+STORAGE_INTEGRATION = s3_int
 FILE_FORMAT = (TYPE = CSV FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+-- Alternativa para desarrollo (INSEGURA — NO USAR EN PRODUCCION):
+--   CREATE OR REPLACE STAGE my_s3_stage
+--   URL = 's3://etl-snowflake-demo-johan/raw/'
+--   CREDENTIALS = (AWS_KEY_ID = '<KEY>' AWS_SECRET_KEY = '<SECRET>')
+--   FILE_FORMAT = (TYPE = CSV FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
 
 -- 3. Verificar Stage (debe mostrar sales_data.csv)
 LIST @my_s3_stage;
