@@ -39,7 +39,7 @@ Registro de avances significativos del proyecto. No incluye commits individuales
 ### Fase 2 — Dimensiones y Transformaciones
 - [ ] Ejecutar `load_dimensions.sql` para poblar DIM_PRODUCTS y DIM_CUSTOMERS
 - [ ] Implementar dbt para transformaciones y testing
-- [x] Migrar credenciales de stage a STORAGE_INTEGRATION
+- [x] Migrar credenciales de stage a STORAGE_INTEGRATION (codigo listo, bloqueado por edicion Standard de Snowflake. STORAGE_INTEGRATION requiere Enterprise+). Se mantiene credenciales inline para desarrollo.
 
 ### Fase 3 — Orquestacion y Visualizacion
 - [ ] DAG de Airflow para orquestar el pipeline completo
