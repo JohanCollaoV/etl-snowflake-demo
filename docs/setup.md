@@ -2,10 +2,12 @@
 
 ## Requisitos
 
-- Python 3.8+
+- Python 3.10+
 - Cuenta de AWS con credenciales configuradas
 - Cuenta de Snowflake
-- Terraform (opcional)
+- Terraform
+- Graphviz (`brew install graphviz` en macOS) — para generar diagramas
+- Docker (para Airflow, Fase 4)
 
 ## Instalación
 

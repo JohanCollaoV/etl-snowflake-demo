@@ -1,6 +1,28 @@
 # Diagramas de Arquitectura
 
-> **Formato**: Mermaid (nativo en GitHub). Para exportar a draw.io o Lucidchart: copiar el bloque de codigo y usar `File > Import From > Mermaid` o usar https://mermaid.live.
+## Iconos Oficiales de AWS (PNG)
+
+Generados con la libreria `diagrams` de Python ([diagrams.mingrammer.com](https://diagrams.mingrammer.com/)). Usan los iconos oficiales de AWS.
+
+Para regenerar:
+```bash
+python scripts/diagrams/aws_architecture.py
+python scripts/diagrams/data_flow.py
+```
+
+### Arquitectura AWS Cloud
+
+![Arquitectura AWS](diagrams/aws_architecture.png)
+
+### Flujo de Datos End-to-End
+
+![Flujo de Datos](diagrams/data_flow.png)
+
+---
+
+## Diagramas Mermaid (GitHub + exportables a draw.io/Lucidchart)
+
+Los bloques de codigo abajo son Mermaid — se renderizan nativo en GitHub. Para draw.io: `Arrange > Insert > Advanced > Mermaid`. Para Lucidchart: `Import > Mermaid`.
 
 ---
 
