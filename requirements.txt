@@ -2,4 +2,3 @@ pandas
 boto3
 snowflake-connector-python
 python-dotenv
-diagrams

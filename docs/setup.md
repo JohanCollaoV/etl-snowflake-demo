@@ -6,7 +6,6 @@
 - Cuenta de AWS con credenciales configuradas
 - Cuenta de Snowflake
 - Terraform
-- Graphviz (`brew install graphviz` en macOS) — para generar diagramas
 - Docker (para Airflow, Fase 4)
 
 ## Instalación

@@ -2,13 +2,7 @@
 
 ## Iconos Oficiales de AWS (PNG)
 
-Generados con la libreria `diagrams` de Python ([diagrams.mingrammer.com](https://diagrams.mingrammer.com/)). Usan los iconos oficiales de AWS.
-
-Para regenerar:
-```bash
-python scripts/diagrams/aws_architecture.py
-python scripts/diagrams/data_flow.py
-```
+Usan los iconos oficiales de AWS. Para replicar en Lucidchart/draw.io, usar como referencia.
 
 ### Arquitectura AWS Cloud
 
