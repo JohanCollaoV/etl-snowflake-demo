@@ -11,6 +11,8 @@ EventBridge → Lambda → S3 → Snowflake → dbt → Looker Studio
                                └── GitHub Actions (CI/CD)
 ```
 
+![Arquitectura AWS](docs/diagrams/aws_architecture.png)
+
 [Ver diagramas completos en docs/diagrams.md](docs/diagrams.md)
 
 ## Stack Tecnologico
