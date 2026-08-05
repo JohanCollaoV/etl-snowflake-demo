@@ -1,26 +1,38 @@
 # ETL Snowflake Demo
 
-Pipeline ETL end-to-end de datos de ventas de e-commerce. Genera datos ficticios, los ingesta a AWS S3, los carga en Snowflake y los transforma para analitica.
+Pipeline ETL end-to-end de datos de ventas de e-commerce. Proyecto de portafolio que demuestra **AWS Serverless**, **Data Engineering** (Snowflake + dbt) y **DevOps** (Terraform, Docker, CI/CD).
+
+## Arquitectura
+
+```
+EventBridge → Lambda → S3 → Snowflake → dbt → Looker Studio
+                     (raw/)    │
+                               ├── Airflow (Docker)
+                               └── GitHub Actions (CI/CD)
+```
+
+[Ver diagramas completos en docs/diagrams.md](docs/diagrams.md)
 
 ## Stack Tecnologico
 
 | Capa | Tecnologia | Estado |
 |------|------------|--------|
-| Infraestructura | Terraform | Completado |
+| Ingesta | AWS Lambda + EventBridge | Planificado |
 | Data Lake | AWS S3 | Completado |
-| Procesamiento | Python + Pandas | Completado |
+| IaC | Terraform | Completado (S3) |
 | Data Warehouse | Snowflake | Completado |
-| Orquestacion | Apache Airflow | Planificado |
-| Transformacion | dbt | Planificado |
-| Visualizacion | Looker Studio | Planificado |
+| Transformacion | dbt Core | Planificado |
+| Orquestacion | Apache Airflow (Docker) | Planificado |
 | CI/CD | GitHub Actions | Planificado |
+| Visualizacion | Looker Studio | Planificado |
 
 ## Requisitos
 
 - Python 3.10+
 - AWS CLI configurado
 - Cuenta de Snowflake
-- Terraform (opcional, para infraestructura)
+- Terraform
+- Docker (para Airflow y dbt)
 
 ## Instalacion
 
@@ -37,14 +49,14 @@ cp .env.example .env
 ## Uso
 
 ```bash
-# Crear bucket S3
+# Crear infraestructura AWS
 cd terraform && terraform init && terraform apply -auto-approve
 
-# Generar datos y subir a S3
+# Generar datos y subir a S3 (local)
 python scripts/ingest/ingest_to_s3.py
 
-# Verificar en S3
-aws s3 ls s3://etl-snowflake-demo-johan/raw/
+# Poblar dimensiones en Snowflake
+python scripts/load_dimensions.py
 
 # Destruir infraestructura al finalizar
 cd terraform && terraform destroy -auto-approve
@@ -53,84 +65,26 @@ cd terraform && terraform destroy -auto-approve
 ## Flujo del Pipeline
 
 ```
-generate_sales_data() → S3 (raw/sales_data.csv) → External Stage → STG_TEMP_SALES → FACT_SALES → DIM_PRODUCTS, DIM_CUSTOMERS
+Lambda (ingest) → S3 (raw/) → External Stage → STG_TEMP_SALES → FACT_SALES + DIM_PRODUCTS + DIM_CUSTOMERS → dbt → Looker Studio
 ```
 
-## Modelo de Datos
+## Fases del Proyecto
 
-### FACT_SALES (Hechos)
-
-| Columna | Tipo | Descripcion |
-|---------|------|-------------|
-| sale_id | VARCHAR(50) | ID unico de venta (PK) |
-| order_date | DATE | Fecha de la venta |
-| customer_id | VARCHAR(50) | FK a DIM_CUSTOMERS |
-| product_id | VARCHAR(50) | FK a DIM_PRODUCTS |
-| quantity | INTEGER | Cantidad vendida |
-| unit_price | DECIMAL(10,2) | Precio unitario |
-| total_amount | DECIMAL(10,2) | Monto total |
-| payment_method | VARCHAR(50) | Metodo de pago |
-| region | VARCHAR(100) | Region geografica |
-| created_at | TIMESTAMP | Fecha de ingesta |
-
-### DIM_PRODUCTS
-
-| Columna | Tipo | Descripcion |
-|---------|------|-------------|
-| product_id | VARCHAR(50) | ID del producto (PK) |
-| product_name | VARCHAR(200) | Nombre del producto |
-| category | VARCHAR(100) | Categoria |
-| brand | VARCHAR(100) | Marca |
-| created_at | TIMESTAMP | Fecha de ingesta |
-
-### DIM_CUSTOMERS
-
-| Columna | Tipo | Descripcion |
-|---------|------|-------------|
-| customer_id | VARCHAR(50) | ID del cliente (PK) |
-| customer_name | VARCHAR(200) | Nombre del cliente |
-| customer_email | VARCHAR(200) | Email del cliente |
-| customer_city | VARCHAR(100) | Ciudad |
-| customer_segment | VARCHAR(50) | Segmento (Gold/Silver/Bronze) |
-| created_at | TIMESTAMP | Fecha de ingesta |
-
-## Consultas Rapidas (Snowflake)
-
-```sql
--- Ventas por region
-SELECT region, COUNT(*) AS total_ventas, SUM(total_amount) AS monto
-FROM FACT_SALES GROUP BY region ORDER BY monto DESC;
-
--- Top 5 productos
-SELECT p.product_name, p.brand, SUM(f.quantity) AS cantidad_total
-FROM FACT_SALES f
-JOIN DIM_PRODUCTS p ON f.product_id = p.product_id
-GROUP BY p.product_name, p.brand ORDER BY cantidad_total DESC LIMIT 5;
-
--- Clientes con mas compras
-SELECT c.customer_name, c.customer_segment, SUM(f.total_amount) AS total_gastado
-FROM FACT_SALES f
-JOIN DIM_CUSTOMERS c ON f.customer_id = c.customer_id
-GROUP BY c.customer_name, c.customer_segment ORDER BY total_gastado DESC LIMIT 10;
-```
-
-## Gestion de Costos
-
-```sql
--- Suspender warehouse (se auto-suspende a los 5 min)
-ALTER WAREHOUSE COMPUTE_WH SUSPEND;
-```
-
-```bash
-# Destruir bucket S3 al finalizar
-cd terraform && terraform destroy -auto-approve
-```
+| Fase | Estado |
+|------|--------|
+| 1 — Fundamentos (S3, Snowflake, tablas) | Completado |
+| 2 — AWS Serverless (Lambda, EventBridge, IAM) | Planificado |
+| 3 — dbt Core (modelos, tests, docs) | Planificado |
+| 4 — Airflow + Docker (orquestacion) | Planificado |
+| 5 — CI/CD (GitHub Actions) | Planificado |
+| 6 — Looker Studio (dashboard) | Planificado |
 
 ## Documentacion
 
 | Documento | Contenido |
 |-----------|-----------|
-| [docs/architecture.md](docs/architecture.md) | Arquitectura y flujo del pipeline |
+| [docs/architecture.md](docs/architecture.md) | Arquitectura detallada del pipeline |
+| [docs/diagrams.md](docs/diagrams.md) | Diagramas Mermaid (Arquitectura, Flujo, IaC) |
 | [docs/deployment.md](docs/deployment.md) | Infraestructura y despliegue |
 | [docs/setup.md](docs/setup.md) | Configuracion y dependencias |
 | [docs/progress.md](docs/progress.md) | Log de hitos del proyecto |
